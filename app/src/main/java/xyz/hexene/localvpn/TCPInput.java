@@ -19,8 +19,6 @@ package xyz.hexene.localvpn;
 import android.util.Log;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -86,26 +84,11 @@ public class TCPInput implements Runnable
         }
     }
 
-    private void workOn(String ipAndPort){
-        String ipAddress, host = null;
-        String  [] parts = ipAndPort.split(":");
-        ipAddress = parts[0];
-
-        try {
-            InetAddress addr = InetAddress.getByName(ipAddress);
-            host = addr.getHostName();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        Log.d("Work on", "IP: " + ipAddress + ": " + host);
-    }
     private void processConnect(SelectionKey key, Iterator<SelectionKey> keyIterator)
     {
         TCB tcb = (TCB) key.attachment();
         Packet referencePacket = tcb.referencePacket;
         Log.d("TCPInput", "Connecting to " + tcb.ipAndPort);
-        workOn(tcb.ipAndPort);
-
         try
         {
             if (tcb.channel.finishConnect())

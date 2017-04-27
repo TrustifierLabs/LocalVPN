@@ -16,16 +16,21 @@
 
 package xyz.hexene.localvpn;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.VpnService;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.Map;
 
 
 public class LocalVPN extends ActionBarActivity
@@ -33,6 +38,8 @@ public class LocalVPN extends ActionBarActivity
     private static final int VPN_REQUEST_CODE = 0x0F;
 
     private boolean waitingForVPNStart;
+
+    private Context context;
 
     private BroadcastReceiver vpnStateReceiver = new BroadcastReceiver()
     {
@@ -64,6 +71,8 @@ public class LocalVPN extends ActionBarActivity
         waitingForVPNStart = false;
         LocalBroadcastManager.getInstance(this).registerReceiver(vpnStateReceiver,
                 new IntentFilter(LocalVPNService.BROADCAST_VPN_STATE));
+
+        context = getApplicationContext();
     }
 
     private void startVPN()
@@ -107,5 +116,25 @@ public class LocalVPN extends ActionBarActivity
             vpnButton.setEnabled(false);
             vpnButton.setText(R.string.stop_vpn);
         }
+    }
+
+    public void RefreshList(View v){
+        SharedPreferences sharedPreferences = getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
+        Map<String, ?> prefsMap = sharedPreferences.getAll();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if(stringBuilder.toString() == "")
+            stringBuilder.append("No IP Addresses found");
+        else
+            stringBuilder.insert(0, "IP addresses found\n");
+
+        for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
+            stringBuilder.append(entry.getKey() + " : " + entry.getValue().toString() + "\n");
+        }
+
+
+        TextView textView = (TextView) findViewById(R.id.myView);
+        textView.setText(stringBuilder.toString());
     }
 }

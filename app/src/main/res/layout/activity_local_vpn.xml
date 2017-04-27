@@ -9,4 +9,26 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/start_vpn" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/vpn"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/refreshBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="RefreshList"
+            android:text="Refresh" />
+
+        <TextView
+            android:id="@+id/myView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </LinearLayout>
 </RelativeLayout>

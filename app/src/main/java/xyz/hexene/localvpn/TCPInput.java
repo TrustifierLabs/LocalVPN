@@ -16,6 +16,7 @@
 
 package xyz.hexene.localvpn;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import xyz.hexene.localvpn.TCB.TCBStatus;
 
@@ -36,11 +39,13 @@ public class TCPInput implements Runnable
 
     private ConcurrentLinkedQueue<ByteBuffer> outputQueue;
     private Selector selector;
+    Context context;
 
-    public TCPInput(ConcurrentLinkedQueue<ByteBuffer> outputQueue, Selector selector)
+    public TCPInput(ConcurrentLinkedQueue<ByteBuffer> outputQueue, Selector selector, Context context)
     {
         this.outputQueue = outputQueue;
         this.selector = selector;
+        this.context = context;
     }
 
     @Override
@@ -84,11 +89,15 @@ public class TCPInput implements Runnable
         }
     }
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(2);
     private void processConnect(SelectionKey key, Iterator<SelectionKey> keyIterator)
     {
         TCB tcb = (TCB) key.attachment();
+
+        executorService.submit(new myLogger(tcb.ipAndPort, context));
         Packet referencePacket = tcb.referencePacket;
         Log.d("TCPInput", "Connecting to " + tcb.ipAndPort);
+
         try
         {
             if (tcb.channel.finishConnect())

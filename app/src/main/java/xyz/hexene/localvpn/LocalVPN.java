@@ -118,23 +118,29 @@ public class LocalVPN extends ActionBarActivity
         }
     }
 
+
     public void RefreshList(View v){
         SharedPreferences sharedPreferences = getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
-        Map<String, ?> prefsMap = sharedPreferences.getAll();
+        sharedPreferences.edit().clear();
+        sharedPreferences.edit().commit();
 
+        Map<String, ?> prefsMap = sharedPreferences.getAll();
         StringBuilder stringBuilder = new StringBuilder();
 
-        if(stringBuilder.toString() == "")
-            stringBuilder.append("No IP Addresses found");
-        else
-            stringBuilder.insert(0, "IP addresses found\n");
+        stringBuilder.append("---------------\n\tIPs  \n ---------------\n");
 
         for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
-            stringBuilder.append(entry.getKey() + " : " + entry.getValue().toString() + "\n");
+            stringBuilder.append( String.format("%-15s \t\n\t [%s connections]\n",entry.getKey(),entry.getValue().toString())  );
         }
-
-
         TextView textView = (TextView) findViewById(R.id.myView);
         textView.setText(stringBuilder.toString());
+    }
+
+    public void clearPrefs(View v){
+        SharedPreferences sharedPreferences = getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+        TextView textView = (TextView) findViewById(R.id.myView);
+        textView.setText("---------------\n\tIPs  \n ---------------\n");
     }
 }

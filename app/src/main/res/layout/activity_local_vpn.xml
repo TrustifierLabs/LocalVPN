@@ -24,6 +24,13 @@
             android:onClick="RefreshList"
             android:text="Refresh" />
 
+        <Button
+            android:id="@+id/clearButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="clearList"
+            android:text="Clear" />
+
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"

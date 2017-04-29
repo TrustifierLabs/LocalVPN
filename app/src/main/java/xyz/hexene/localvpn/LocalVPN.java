@@ -123,7 +123,7 @@ public class LocalVPN extends ActionBarActivity
 
         TextView textView = (TextView) findViewById(R.id.myView);
 
-        textView.setText("IP Address [Connecions made]\n--------------\n");
+        textView.setText("IP Address [Connections made]\n--------------\n");
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -131,5 +131,13 @@ public class LocalVPN extends ActionBarActivity
             stringBuilder.append(String.format("%-16s\t\t [%-3s Connections]\n",entry.getKey(), entry.getValue().toString()));
         }
         textView.append(stringBuilder.toString());
+    }
+
+    public void clearList(View v){
+        TextView textView = (TextView) findViewById(R.id.myView);
+        textView.setText("");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().commit();
     }
 }

@@ -16,7 +16,6 @@
 
 package xyz.hexene.localvpn;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -122,19 +121,15 @@ public class LocalVPN extends ActionBarActivity
         SharedPreferences sharedPreferences = getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
         Map<String, ?> prefsMap = sharedPreferences.getAll();
 
+        TextView textView = (TextView) findViewById(R.id.myView);
+
+        textView.setText("IP Address [Connecions made]\n--------------\n");
+
         StringBuilder stringBuilder = new StringBuilder();
 
-        if(stringBuilder.toString() == "")
-            stringBuilder.append("No IP Addresses found");
-        else
-            stringBuilder.insert(0, "IP addresses found\n");
-
         for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
-            stringBuilder.append(entry.getKey() + " : " + entry.getValue().toString() + "\n");
+            stringBuilder.append(String.format("%-16s\t\t [%-3s Connections]\n",entry.getKey(), entry.getValue().toString()));
         }
-
-
-        TextView textView = (TextView) findViewById(R.id.myView);
-        textView.setText(stringBuilder.toString());
+        textView.append(stringBuilder.toString());
     }
 }

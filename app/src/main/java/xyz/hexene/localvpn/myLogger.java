@@ -22,7 +22,7 @@ public class myLogger implements Runnable {
     public void run() {
         sharedPreferences = context.getSharedPreferences("ipAddressTable", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String [] s_ipAddress = ipAddress.split("-");
+        String [] s_ipAddress = ipAddress.split(":");
 
         editor.putInt(s_ipAddress[0], count++);
         editor.commit();

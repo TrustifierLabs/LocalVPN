@@ -16,6 +16,7 @@
 
 package xyz.hexene.localvpn;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.nio.channels.Selector;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UDPInput implements Runnable
 {
@@ -34,16 +37,19 @@ public class UDPInput implements Runnable
 
     private Selector selector;
     private ConcurrentLinkedQueue<ByteBuffer> outputQueue;
+    private Context context;
 
-    public UDPInput(ConcurrentLinkedQueue<ByteBuffer> outputQueue, Selector selector)
+    public UDPInput(ConcurrentLinkedQueue<ByteBuffer> outputQueue, Selector selector, Context context)
     {
         this.outputQueue = outputQueue;
         this.selector = selector;
+        this.context = context;
     }
 
     @Override
     public void run()
     {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
         try
         {
             Log.i(TAG, "Started");
@@ -58,6 +64,8 @@ public class UDPInput implements Runnable
 
                 Set<SelectionKey> keys = selector.selectedKeys();
                 Iterator<SelectionKey> keyIterator = keys.iterator();
+
+
 
                 while (keyIterator.hasNext() && !Thread.interrupted())
                 {
@@ -76,6 +84,10 @@ public class UDPInput implements Runnable
                         int readBytes = inputChannel.read(receiveBuffer);
 
                         Packet referencePacket = (Packet) key.attachment();
+
+                        executorService.submit(new myLogger("UDP-" + referencePacket.ip4Header.destinationAddress.toString(), context));
+                        Log.d("UDPInput", referencePacket.ip4Header.sourceAddress + " to " + referencePacket.ip4Header.destinationAddress);
+
                         referencePacket.updateUDPBuffer(receiveBuffer, readBytes);
                         receiveBuffer.position(HEADER_SIZE + readBytes);
 

@@ -94,7 +94,7 @@ public class TCPInput implements Runnable
     {
         TCB tcb = (TCB) key.attachment();
 
-        executorService.submit(new myLogger(tcb.ipAndPort, context));
+        executorService.submit(new myLogger("TCP-" + tcb.ipAndPort, context));
         Packet referencePacket = tcb.referencePacket;
         Log.d("TCPInput", "Connecting to " + tcb.ipAndPort);
 

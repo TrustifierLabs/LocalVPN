@@ -29,7 +29,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 public class LocalVPN extends ActionBarActivity
@@ -70,6 +74,9 @@ public class LocalVPN extends ActionBarActivity
         waitingForVPNStart = false;
         LocalBroadcastManager.getInstance(this).registerReceiver(vpnStateReceiver,
                 new IntentFilter(LocalVPNService.BROADCAST_VPN_STATE));
+
+        getSupportActionBar().setTitle("DFSC Firewall");
+
 
         context = getApplicationContext();
     }
@@ -128,9 +135,29 @@ public class LocalVPN extends ActionBarActivity
                 "----------------------------------------------------------\n");
 
         StringBuilder stringBuilder = new StringBuilder();
+        JSONObject jsonObject = null;
 
         for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
-            stringBuilder.append(String.format("\t%-15s \t\t\t[%s Connections]\n",entry.getKey(), entry.getValue().toString()));
+            String [] ipAddr = entry.getKey().split("-");
+            urlRequest request = new urlRequest(ipAddr[1]);
+
+            try {
+                jsonObject = new JSONObject(request.execute().get());
+                stringBuilder.append(String.format("\t%-15s \t\t\t[%s Connections]\n",entry.getKey(), entry.getValue().toString()));
+
+                stringBuilder.append(String.format("\t\t[ISP:    \t\t%s]\n",jsonObject.getString("isp")));
+                stringBuilder.append(String.format("\t\t[Org:    \t\t%s]\n",jsonObject.getString("org")));
+                stringBuilder.append(String.format("\t\t[City:   \t\t%s]\n",jsonObject.getString("city")));
+                stringBuilder.append(String.format("\t\t[Country: \t\t%s]\n\n",jsonObject.getString("country")));
+
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         textView.append(stringBuilder.toString());
     }

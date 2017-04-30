@@ -123,12 +123,14 @@ public class LocalVPN extends ActionBarActivity
 
         TextView textView = (TextView) findViewById(R.id.myView);
 
-        textView.setText("IP Address [Connections made]\n--------------\n");
+        textView.setText("----------------------------------------------------------\n" +
+                "IP Address [Connections made]\n" +
+                "----------------------------------------------------------\n");
 
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Map.Entry<String, ?> entry: prefsMap.entrySet()) {
-            stringBuilder.append(String.format("%-16s\t\t [%-3s Connections]\n",entry.getKey(), entry.getValue().toString()));
+            stringBuilder.append(String.format("\t%-15s \t\t\t[%s Connections]\n",entry.getKey(), entry.getValue().toString()));
         }
         textView.append(stringBuilder.toString());
     }

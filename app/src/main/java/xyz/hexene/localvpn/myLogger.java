@@ -24,7 +24,8 @@ public class myLogger implements Runnable {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String [] s_ipAddress = ipAddress.split(":");
 
-        editor.putInt(s_ipAddress[0], count++);
+        count = sharedPreferences.getInt(s_ipAddress[0], 0);
+        editor.putInt(s_ipAddress[0], ++count);
         editor.commit();
      //   GlobalVars gv = (GlobalVars) context;
      //   gv.addIpAddress(s_ipAddress[0]);
